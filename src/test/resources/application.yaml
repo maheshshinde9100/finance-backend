@@ -10,3 +10,13 @@ server:
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000
+
+# --- Actuator configuration ---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info   # Expose health and info endpoints
+  endpoint:
+    health:
+      show-details: always     # Show full health details

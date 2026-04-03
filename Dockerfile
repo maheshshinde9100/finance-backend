@@ -1,34 +1,33 @@
-# Dockerfile for Zorvyn - Financial Records Management System
-# Multi-stage build for optimized image size
-
-# Build stage
-FROM maven:3.9.4-openjdk-17-slim AS build
+# ---------------------------
+# Stage 1: Build
+# ---------------------------
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy pom.xml first for better layer caching
+# Copy pom.xml and download dependencies
 COPY pom.xml .
-
-# Download dependencies (this layer will be cached if pom.xml doesn't change)
 RUN mvn dependency:go-offline -B
 
 # Copy source code
 COPY src ./src
 
-# Build the application
+# Build the Spring Boot app (skip tests for faster build)
 RUN mvn clean package -DskipTests
 
-# Runtime stage
-FROM openjdk:17-jre-slim
+# ---------------------------
+# Stage 2: Runtime
+# ---------------------------
+FROM eclipse-temurin:17-jre-focal
 
 # Set working directory
 WORKDIR /app
 
-# Create a non-root user for security
+# Create non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
-# Copy the built JAR from build stage
+# Copy the built JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
 # Change ownership to non-root user
@@ -37,12 +36,13 @@ RUN chown -R appuser:appuser /app
 # Switch to non-root user
 USER appuser
 
-# Expose port 8081
+# Expose port your app listens on
+ENV SERVER_PORT=8081
 EXPOSE 8081
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+# Health check for Render
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:8081/actuator/health || exit 1
 
-# Run the application
+# Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
