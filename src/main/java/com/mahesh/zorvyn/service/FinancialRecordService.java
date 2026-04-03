@@ -73,22 +73,37 @@ public class FinancialRecordService {
     
     public List<FinancialRecord> filterRecords(RecordType type, String category, LocalDate startDate, LocalDate endDate) {
         String userId = getCurrentUserId();
-        
-        if (type != null && category != null && startDate != null && endDate != null) {
+
+        boolean hasType = type != null;
+        boolean hasCategory = category != null && !category.trim().isEmpty();
+        boolean hasDateRange = startDate != null && endDate != null;
+
+        if (hasType && hasCategory && hasDateRange) {
             return financialRecordRepository.findByUserIdAndTypeAndDateBetween(userId, type, startDate, endDate)
                     .stream()
-                    .filter(record -> record.getCategory().equalsIgnoreCase(category))
+                    .filter(record -> record.getCategory() != null && record.getCategory().equalsIgnoreCase(category.trim()))
                     .collect(Collectors.toList());
-        } else if (type != null && startDate != null && endDate != null) {
+        } else if (hasType && hasDateRange) {
             return financialRecordRepository.findByUserIdAndTypeAndDateBetween(userId, type, startDate, endDate);
-        } else if (category != null && startDate != null && endDate != null) {
-            return financialRecordRepository.findByUserIdAndCategoryAndDateBetween(userId, category, startDate, endDate);
-        } else if (startDate != null && endDate != null) {
+        } else if (hasCategory && hasDateRange) {
+            return financialRecordRepository.findByUserIdAndDateBetween(userId, startDate, endDate)
+                    .stream()
+                    .filter(record -> record.getCategory() != null && record.getCategory().equalsIgnoreCase(category.trim()))
+                    .collect(Collectors.toList());
+        } else if (hasDateRange) {
             return financialRecordRepository.findByUserIdAndDateBetween(userId, startDate, endDate);
-        } else if (type != null) {
+        } else if (hasType && hasCategory) {
+            return financialRecordRepository.findByUserIdAndType(userId, type)
+                    .stream()
+                    .filter(record -> record.getCategory() != null && record.getCategory().equalsIgnoreCase(category.trim()))
+                    .collect(Collectors.toList());
+        } else if (hasType) {
             return financialRecordRepository.findByUserIdAndType(userId, type);
-        } else if (category != null) {
-            return financialRecordRepository.findByUserIdAndCategory(userId, category);
+        } else if (hasCategory) {
+            return financialRecordRepository.findByUserId(userId)
+                    .stream()
+                    .filter(record -> record.getCategory() != null && record.getCategory().equalsIgnoreCase(category.trim()))
+                    .collect(Collectors.toList());
         } else {
             return financialRecordRepository.findByUserId(userId);
         }

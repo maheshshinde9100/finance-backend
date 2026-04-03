@@ -4,6 +4,8 @@ import com.mahesh.zorvyn.security.AuthEntryPointJwt;
 import com.mahesh.zorvyn.security.AuthTokenFilter;
 import com.mahesh.zorvyn.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,6 +58,8 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/", "/index.html", "/favicon.ico", "/app.js", "/styles.css", "/**/*.css", "/**/*.js", "/**/*.html").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
