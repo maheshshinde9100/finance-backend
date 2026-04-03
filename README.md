@@ -384,6 +384,42 @@ mvn clean package
 java -jar target/zorvyn-0.0.1-SNAPSHOT.jar
 ```
 
+### Docker Deployment
+
+Your Dockerfile now uses:
+- `FROM maven:3.9.4-eclipse-temurin-17` (build stage)
+- `FROM eclipse-temurin:17-jre-focal` (runtime stage)
+
+Build and run with Docker:
+
+```bash
+# Build the Docker image
+docker build -t zorvyn-app .
+
+# Run locally
+docker run -p 8081:8081 zorvyn-app
+```
+
+> The container exposes port 8081 and uses environment variable `SERVER_PORT=8081`.
+
+#### Deploy to Render.com
+
+1. **Connect your repository** to Render.com
+2. **Create a new Web Service** from your repository
+3. **Configure the service**:
+   - **Runtime**: Docker
+   - **Build Command**: (leave empty, uses Dockerfile)
+   - **Start Command**: (leave empty, usesDockerfile ENTRYPOINT)
+4. **Set environment variables**:
+   - `MONGODB_URI`: Your MongoDB connection string
+   - `JWT_SECRET`: Your JWT secret key
+   - `SERVER_PORT`: `8081` (default)
+5. **Deploy** the service
+
+The application will be available at the URL provided by Render.com.
+
+The application will be available at the URL provided by Render.com.
+
 ## Troubleshooting
 
 ### MongoDB Connection Issues
