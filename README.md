@@ -6,6 +6,8 @@ A RESTful API application for managing personal financial records with secure au
 
 This application provides a complete backend solution for tracking income and expenses with user authentication, role-based access control, and comprehensive financial analytics. It includes a simple web interface for testing and demonstration purposes.
 
+**Application runs on port 8081 by default.**
+
 ## Technology Stack
 
 - Spring Boot 4.0.5
@@ -308,7 +310,7 @@ spring:
     mongodb:
       uri: ${MONGODB_URI}
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8081}
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:86400000}
@@ -320,14 +322,14 @@ Set environment variables:
 ```bash
 export MONGODB_URI="mongodb+srv://username:password@cluster.mongodb.net/finance-backend-db"
 export JWT_SECRET="your-production-secret"
-export SERVER_PORT="8080"
+export SERVER_PORT="8081"
 ```
 
 **Windows (PowerShell):**
 ```powershell
 $env:MONGODB_URI="mongodb+srv://username:password@cluster.mongodb.net/finance-backend-db"
 $env:JWT_SECRET="your-production-secret"
-$env:SERVER_PORT="8080"
+$env:SERVER_PORT="8081"
 ```
 
 ### Security Features Implemented
