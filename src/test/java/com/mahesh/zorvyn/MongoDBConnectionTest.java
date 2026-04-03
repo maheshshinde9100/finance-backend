@@ -178,7 +178,7 @@ public class MongoDBConnectionTest {
 
         try {
             // Create sample user
-            String sampleUsername = "sampleuser";
+            String sampleUsername = "maheshshinde";
             
             // Check if user already exists
             if (userRepository.findByUsername(sampleUsername).isPresent()) {
@@ -188,14 +188,14 @@ public class MongoDBConnectionTest {
 
             User sampleUser = new User();
             sampleUser.setUsername(sampleUsername);
-            sampleUser.setEmail("sample@example.com");
-            sampleUser.setPassword(passwordEncoder.encode("Sample@123"));
+            sampleUser.setEmail("mahesh@gmail.com");
+            sampleUser.setPassword(passwordEncoder.encode("mahesh@123"));
             sampleUser.setRoles(Set.of(Role.ROLE_USER));
 
             User savedUser = userRepository.save(sampleUser);
             System.out.println("Sample user created");
             System.out.println("  Username: " + savedUser.getUsername());
-            System.out.println("  Password: Sample@123");
+            System.out.println("  Password: mahesh@123");
             System.out.println("  User ID: " + savedUser.getId());
 
             // Create diverse sample records
