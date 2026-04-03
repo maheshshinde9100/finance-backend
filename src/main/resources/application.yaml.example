@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: zorvyn
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/finance-backend-db
+
+server:
+  port: 8081
+
+jwt:
+  secret: your-secret-key-here-minimum-256-bits-change-in-production
+  expiration: 86400000
